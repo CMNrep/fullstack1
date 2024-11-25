@@ -28,7 +28,7 @@ function ListarAssociados() {
 
   return (
     <>
-      <NavBar Title="Listar  Associados" />
+      <NavBar />
       <Container className="mt-4">
         <h3 className="text-center mb-4">Associados Cadastrados</h3>
         {associados.length === 0 ? (
