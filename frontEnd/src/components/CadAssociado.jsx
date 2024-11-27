@@ -3,8 +3,19 @@ import NavBar from "./Nav";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 import InputMask from "react-input-mask";
 
+
+
+/**
+ * CadAssociado is a React functional component that provides a form for associating
+ * registration. It allows users to input and manage personal details such as name,
+ * CPF, address, email, phone number, status, date of birth, and an avatar photo.
+ * The component handles changes to form inputs, processes avatar image uploads,
+ * and manages form submission to store the data in LocalStorage. It also resets
+ * the form to its initial state after a successful submission.
+ */
 function CadAssociado() {
   const [formData, setFormData] = useState({
+    cpf: null,
     nome: "",
     endereco: "",
     email: "",
@@ -12,14 +23,15 @@ function CadAssociado() {
     status: "Ativo",
     dataNascimento: "",
     foto: "",
+    dataCadastro: new Date().toISOString().slice(0, 10),
   });
 
   /**
    * Handles change events for controlled form elements
    * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
    * @returns {void}
-   *  função handleChange que atualiza o estado formData quando 
-   *  o valor de um elemento de formulário muda. Ele extrai o nome e o valor do elemento alterado 
+   *  função handleChange que atualiza o estado formData quando
+   *  o valor de um elemento de formulário muda. Ele extrai o nome e o valor do elemento alterado
    *  e mescla o novo valor no objeto formData existente.
    */
   const handleChange = (e) => {
@@ -31,8 +43,8 @@ function CadAssociado() {
    * Handles file input changes for the avatar upload
    * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
    * @returns {void}
-   *  função handleFileChange que atualiza o estado formData com o conteúdo do arquivo 
-   *  selecionado no input de arquivo. Ela usa o construtor FileReader para ler o arquivo 
+   *  função handleFileChange que atualiza o estado formData com o conteúdo do arquivo
+   *  selecionado no input de arquivo. Ela usa o construtor FileReader para ler o arquivo
    *  e, quando a leitura termina, atualiza o estado formData com o resultado da leitura.
    */
   const handleFileChange = (e) => {
@@ -46,15 +58,15 @@ function CadAssociado() {
     }
   };
 
-/**
- * Handles the form submission for associating registration.
- * Prevents the default form submission behavior, validates required fields,
- * and stores the form data in LocalStorage if all fields are filled.
- * Alerts the user in case of missing fields or successful registration.
- * Resets the form data to initial state after submission.
- * @param {React.FormEvent<HTMLFormElement>} e - The form submit event
- * @returns {void}
- */
+  /**
+   * Handles the form submission for associating registration.
+   * Prevents the default form submission behavior, validates required fields,
+   * and stores the form data in LocalStorage if all fields are filled.
+   * Alerts the user in case of missing fields or successful registration.
+   * Resets the form data to initial state after submission.
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submit event
+   * @returns {void}
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -65,11 +77,14 @@ function CadAssociado() {
 
     // LocalStorage
     const associados = JSON.parse(localStorage.getItem("associados")) || [];
-    localStorage.setItem("associados", JSON.stringify([...associados, formData]));
+    localStorage.setItem(
+      "associados",
+      JSON.stringify([...associados, formData])
+    );
     alert("Associado cadastrado com sucesso!");
 
-
     setFormData({
+      cpf: null,
       nome: "",
       endereco: "",
       email: "",
@@ -88,8 +103,12 @@ function CadAssociado() {
           <Col md={8}>
             <div className="p-4 bg-white rounded shadow-sm">
               <Row className="justify-content-center ">
-                <h3 className="text-center mb-4 d-none d-sm-block">Cadastro de Associados</h3>
-                <h5 className="text-center mb-4 d-block d-sm-none">Cadastro de Associados</h5>
+                <h3 className="text-center mb-4 d-none d-sm-block">
+                  Cadastro de Associados
+                </h3>
+                <h5 className="text-center mb-4 d-block d-sm-none">
+                  Cadastro de Associados
+                </h5>
               </Row>
               <Row>
                 {/* Formulário */}
@@ -107,7 +126,10 @@ function CadAssociado() {
                           }}
                         >
                           <Image
-                            src={formData.foto || "https://via.placeholder.com/298x248"}
+                            src={
+                              formData.foto ||
+                              "https://via.placeholder.com/298x248"
+                            }
                             alt="Foto"
                             className="img-fluid mx-auto my-auto"
                             style={{ height: "100%", objectFit: "cover" }}
@@ -134,6 +156,16 @@ function CadAssociado() {
                             onChange={handleChange}
                             placeholder="Digite seu nome"
                             required
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formCPF">
+                          <Form.Label>CPF</Form.Label>
+                          <InputMask
+                            mask="999.999.999-99"
+                            value={formData.cpf}
+                            onChange={handleChange}
+                            className="form-control"
+                            placeholder="Digite seu CPF"
                           />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formEndereco">

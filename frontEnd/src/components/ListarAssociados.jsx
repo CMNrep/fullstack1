@@ -21,6 +21,12 @@ function ListarAssociados() {
     }
   };
 
+  const formatarData = (data) => {
+    if (!data) return "";
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
   // Carregar os associados ao montar o componente
   useEffect(() => {
     carregarAssociados();
@@ -39,9 +45,12 @@ function ListarAssociados() {
               <tr>
                 <th>Foto</th>
                 <th>Nome</th>
+                <th>Cpf</th>
                 <th>E-mail</th>
                 <th>Telefone</th>
                 <th>Status</th>
+                <th>data de nascimento</th>
+                <th>Data de Cadastro</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -52,13 +61,16 @@ function ListarAssociados() {
                     <img
                       src={associado.foto || "https://via.placeholder.com/50"}
                       alt="Foto do associado"
-                      style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "50%" }}
-                    />
+                      style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "10%"}}
+                    /> 
                   </td>
                   <td>{associado.nome}</td>
+                  <td>{associado.cpf}</td>
                   <td>{associado.email}</td>
                   <td>{associado.telefone}</td>
                   <td>{associado.status}</td>
+                  <td>{formatarData(associado.dataNascimento)}</td>
+                  <td>{formatarData(associado.dataCadastro) || "N/A"}</td>
                   <td>
                     <Button
                       variant="danger"
