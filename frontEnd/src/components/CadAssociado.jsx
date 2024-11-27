@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import NavBar from "./Nav";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 import InputMask from "react-input-mask";
+import axios from "axios";
 
 
 
@@ -26,13 +27,13 @@ function CadAssociado() {
     dataCadastro: new Date().toISOString().slice(0, 10),
   });
 
+ 
+  const [isLoading, setIsLoading] = useState(false);
+
   /**
-   * Handles change events for controlled form elements
-   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+   * Handles changes to form inputs by updating the formData state
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLSelectElement>} e - The change event
    * @returns {void}
-   *  função handleChange que atualiza o estado formData quando
-   *  o valor de um elemento de formulário muda. Ele extrai o nome e o valor do elemento alterado
-   *  e mescla o novo valor no objeto formData existente.
    */
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,7 +68,7 @@ function CadAssociado() {
    * @param {React.FormEvent<HTMLFormElement>} e - The form submit event
    * @returns {void}
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.nome || !formData.email || !formData.telefone) {
@@ -75,24 +76,32 @@ function CadAssociado() {
       return;
     }
 
-    // LocalStorage
-    const associados = JSON.parse(localStorage.getItem("associados")) || [];
-    localStorage.setItem(
-      "associados",
-      JSON.stringify([...associados, formData])
-    );
-    alert("Associado cadastrado com sucesso!");
+    setIsLoading(true);
 
-    setFormData({
-      cpf: null,
-      nome: "",
-      endereco: "",
-      email: "",
-      telefone: "",
-      status: "Ativo",
-      dataNascimento: "",
-      foto: "",
-    });
+    try {
+      // Chamada à API do backend (rota POST para cadastro)
+      await axios.post("http://localhost:3000/associados", formData);
+
+      alert("Associado cadastrado com sucesso!");
+
+      // Reseta o formulário após o sucesso
+      setFormData({
+        cpf: "",
+        nome: "",
+        endereco: "",
+        email: "",
+        telefone: "",
+        status: "Ativo",
+        dataNascimento: "",
+        foto: "",
+        dataCadastro: new Date().toISOString().slice(0, 10),
+      });
+    } catch (error) {
+      console.error("Erro ao cadastrar associado:", error);
+      alert("Ocorreu um erro ao tentar cadastrar o associado. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
