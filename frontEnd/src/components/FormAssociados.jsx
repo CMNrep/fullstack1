@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import NavBar from "./Nav";
-import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
+import {  Row, Col, Form, Button, Image } from "react-bootstrap";
 import InputMask from "react-input-mask";
-import { useParams } from "react-router-dom";
-
-
-
+import FormsBase from "./FormsBase";
 
 /**
  * CadAssociado is a React functional component that provides a form for associating
@@ -16,7 +12,6 @@ import { useParams } from "react-router-dom";
  * the form to its initial state after a successful submission.
  */
 function FormAssociados() {
-  const { cpf } = useParams();
   const [formData, setFormData] = useState({
     cpf: null,
     nome: "",
@@ -28,16 +23,9 @@ function FormAssociados() {
     foto: "",
     dataCadastro: new Date().toISOString().slice(0, 10),
   });
-  const fetchAssociado =  () => {
-    fetch(`http://localhost:3000/associados/${cpf}`)
-    .then((res) => res.json()).then((json) => {
-      setFormData(json.data)
-    })
-  };
 
- 
   const [isLoading, setIsLoading] = useState(false);
-  
+
   /**
    * Handles changes to form inputs by updating the formData state
    * @param {React.ChangeEvent<HTMLInputElement | HTMLSelectElement>} e - The change event
@@ -88,7 +76,7 @@ function FormAssociados() {
 
     try {
       // Chamada à API do backend (rota POST para cadastro)
-    
+
       alert("Associado cadastrado com sucesso!");
 
       // Reseta o formulário após o sucesso
@@ -101,11 +89,13 @@ function FormAssociados() {
         status: "Ativo",
         dataNascimento: "",
         foto: "",
-        dataCadastro: new Date().toISOString().slice(0, 10),
+        dataCadastro: new Date().toISOString().slice(0, 10).split("T")[0],
       });
     } catch (error) {
       console.error("Erro ao cadastrar associado:", error);
-      alert("Ocorreu um erro ao tentar cadastrar o associado. Tente novamente.");
+      alert(
+        "Ocorreu um erro ao tentar cadastrar o associado. Tente novamente."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -113,170 +103,151 @@ function FormAssociados() {
 
   return (
     <>
-      <NavBar />
-      <Container className="mt-4">
-        <Row className="justify-content-center">
-          <Col md={8}>
-            <div className="p-4 bg-white rounded shadow-sm">
-              <Row className="justify-content-center ">
-                <h3 className="text-center mb-4 d-none d-sm-block">
-                  Cadastro de Associados
-                </h3>
-                <h5 className="text-center mb-4 d-block d-sm-none">
-                  Cadastro de Associados
-                </h5>
-              </Row>
+      <FormsBase title="Cadastro de Associados">
+        <Row>
+          {/* Formulário */}
+          <Col md={12}>
+            <Form onSubmit={handleSubmit}>
               <Row>
-                {/* Formulário */}
-                <Col md={12}>
-                  <Form onSubmit={handleSubmit}>
-                    <Row>
-                      {/* Coluna de Foto */}
-                      <Col md={5} className="mb-2">
-                        <Row
-                          className="border rounded mb-1"
-                          style={{
-                            height: "248px",
-                            maxWidth: "298px",
-                            backgroundColor: "#f8f9fa",
-                          }}
-                        >
-                          <Image
-                            src={
-                              formData.foto ||
-                              "https://via.placeholder.com/298x248"
-                            }
-                            alt="Foto"
-                            className="img-fluid mx-auto my-auto"
-                            style={{ height: "100%", objectFit: "cover" }}
-                          />
-                        </Row>
-                        <Form.Group controlId="formFileSm">
-                          <Form.Label>Selecione uma foto</Form.Label>
-                          <Form.Control
-                            type="file"
-                            size="sm"
-                            onChange={handleFileChange}
-                          />
-                        </Form.Group>
-                      </Col>
+                {/* Coluna de Foto */}
+                <Col md={5} className="mb-2">
+                  <Row
+                    className="border rounded mb-1"
+                    style={{
+                      height: "248px",
+                      maxWidth: "298px",
+                      backgroundColor: "#f8f9fa",
+                    }}
+                  >
+                    <Image
+                      src={
+                        formData.foto || "https://via.placeholder.com/298x248"
+                      }
+                      alt="Foto"
+                      className="img-fluid mx-auto my-auto"
+                      style={{ height: "100%", objectFit: "cover" }}
+                    />
+                  </Row>
+                  <Form.Group controlId="formFileSm">
+                    <Form.Label>Selecione uma foto</Form.Label>
+                    <Form.Control
+                      type="file"
+                      size="sm"
+                      onChange={handleFileChange}
+                    />
+                  </Form.Group>
+                </Col>
 
-                      {/* Coluna de Dados */}
-                      <Col md={7}>
-                        <Form.Group className="mb-3" controlId="formNome">
-                          <Form.Label>Nome</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="nome"
-                            minLength={10}
-                            value={formData.nome}
-                            onChange={handleChange}
-                            placeholder="Digite seu nome"
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formCPF">
-                          <Form.Label>CPF</Form.Label>
-                          <InputMask
-                            mask="999.999.999-99"
-                            value={formData.cpf}
-                            minLength={28}
-                            onChange={handleChange}
-                            className="form-control"
-                            placeholder="Digite seu CPF"
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formEndereco">
-                          <Form.Label>Endereço</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="endereco"
-                            value={formData.endereco}
-                            onChange={handleChange}
-                            placeholder="Digite seu endereço"
-                            required
-                          />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formEmail">
-                          <Form.Label>E-mail</Form.Label>
-                          <Form.Control
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Digite seu e-mail"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-
-                    {/* Linha com Telefone, Status e Data de Nascimento */}
-                    <Row>
-                      <Col md={4}>
-                        <Form.Group className="mb-3" controlId="formTelefone">
-                          <Form.Label>Telefone</Form.Label>
-                          <InputMask
-                            className="form-control"
-                            mask="(99) 99999-9999"
-                            name="telefone"
-                            value={formData.telefone}
-                            onChange={handleChange}
-                            placeholder="Digite seu telefone"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={4}>
-                        <Form.Group className="mb-3" controlId="formStatus">
-                          <Form.Label>Status</Form.Label>
-                          <Form.Select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                          >
-                            <option>Ativo</option>
-                            <option>Inativo</option>
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={4}>
-                        <Form.Group
-                          className="mb-3"
-                          controlId="formDataNascimento"
-                        >
-                          <Form.Label>Data de Nascimento</Form.Label>
-                          <Form.Control
-                            type="date"
-                            name="dataNascimento"
-                            max={(() => {
-                              const today = new Date();
-                              today.setDate(today.getDate() - 0); 
-                              return today.toISOString().split("T")[0]; 
-                            })()}                        
-                            value={formData.dataNascimento}
-                            onChange={handleChange}
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-
-                    {/* Botão Salvar */}
-                    <Row className="mt-3">
-                      <Col className="d-flex justify-content-end">
-                        <Button variant="primary" type="submit">
-                          Salvar
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Form>
+                {/* Coluna de Dados */}
+                <Col md={7}>
+                  <Form.Group className="mb-3" controlId="formNome">
+                    <Form.Label>Nome</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="nome"
+                      minLength={10}
+                      value={formData.nome}
+                      onChange={handleChange}
+                      placeholder="Digite seu nome"
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="formCPF">
+                    <Form.Label>CPF</Form.Label>
+                    <InputMask
+                      mask="999.999.999-99"
+                      value={formData.cpf}
+                      minLength={28}
+                      onChange={handleChange}
+                      className="form-control"
+                      placeholder="Digite seu CPF"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="formEndereco">
+                    <Form.Label>Endereço</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="endereco"
+                      value={formData.endereco}
+                      onChange={handleChange}
+                      placeholder="Digite seu endereço"
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3" controlId="formEmail">
+                    <Form.Label>E-mail</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Digite seu e-mail"
+                      required
+                    />
+                  </Form.Group>
                 </Col>
               </Row>
-            </div>
+
+              {/* Linha com Telefone, Status e Data de Nascimento */}
+              <Row>
+                <Col md={4}>
+                  <Form.Group className="mb-3" controlId="formTelefone">
+                    <Form.Label>Telefone</Form.Label>
+                    <InputMask
+                      className="form-control"
+                      mask="(99) 99999-9999"
+                      name="telefone"
+                      value={formData.telefone}
+                      onChange={handleChange}
+                      placeholder="Digite seu telefone"
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group className="mb-3" controlId="formStatus">
+                    <Form.Label>Status</Form.Label>
+                    <Form.Select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleChange}
+                    >
+                      <option>Ativo</option>
+                      <option>Inativo</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={4}>
+                  <Form.Group className="mb-3" controlId="formDataNascimento">
+                    <Form.Label>Data de Nascimento</Form.Label>
+                    <Form.Control
+                      type="date"
+                      name="dataNascimento"
+                      max={(() => {
+                        const today = new Date();
+                        today.setDate(today.getDate() - 0);
+                        return today.toISOString().split("T")[0];
+                      })()}
+                      value={formData.dataNascimento}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+
+              {/* Botão Salvar */}
+              <Row className="mt-3">
+                <Col className="d-flex justify-content-end">
+                  <Button variant="primary" type="submit">
+                    Salvar
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
           </Col>
         </Row>
-      </Container>
+      </FormsBase>
     </>
   );
 }

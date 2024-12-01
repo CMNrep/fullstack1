@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./Nav";
 import { Container, Table, Button } from "react-bootstrap";
-import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ListarAssociados() {
   const [associados, setAssociados] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Função para carregar os dados dos associados do backend
-   */
-  const carregarAssociados = async () => {
-    setIsLoading(true); // Ativa estado de carregamento
-    try {
-      const response = await axios.get("http://localhost:3000/associados");
-      setAssociados(response.data); // Define os associados retornados pela API
-    } catch (error) {
-      console.error("Erro ao carregar associados:", error);
-      alert("Erro ao carregar a lista de associados. Tente novamente.");
-    } finally {
-      setIsLoading(false); // Finaliza o estado de carregamento
-    }
+  const navigate = useNavigate();
+
+  const { cpf } = useParams();
+
+  const fetchAssociado =  (cpf) => {
+    fetch(`http://localhost:3000/associados/${cpf}`)
+    .then((res) => res.json()).then((json) => {
+      setAssociados(json.data || [])}).catch ((err) => console.log(err))
   };
 
-  /**
-   * Função para excluir um associado do backend
-   * @param {string} cpf - CPF do associado a ser excluído
-   */
-  const excluirAssociado = async (cpf) => {
-    if (window.confirm("Tem certeza que deseja excluir este associado?")) {
-      try {
-        await axios.delete(`http://localhost:3000/associados/${cpf}`);
-        alert("Associado excluído com sucesso!");
-        carregarAssociados(); // Recarrega a lista de associados
-      } catch (error) {
-        console.error("Erro ao excluir associado:", error);
-        alert("Erro ao excluir associado. Tente novamente.");
-      }
+  const handleDelete = (cpf) => {
+    if (window.confirm("Tem certeza que deseja excluir o associado?")) {
+      fetch(`http://localhost:3000/associados/${cpf}`, {
+        method: "DELETE",
+      }).then(() => {
+        setAssociados(associados.filter((associado) => associado.cpf !== cpf));
+      }).catch((err) => console.log(err));
     }
-  };
+  }
+
 
   /**
    * Função para formatar datas no padrão brasileiro (dd/mm/yyyy)
@@ -55,7 +42,7 @@ function ListarAssociados() {
    * Carregar os associados ao montar o componente
    */
   useEffect(() => {
-    carregarAssociados();
+    fetchAssociado();
   }, []);
 
   return (
@@ -63,11 +50,6 @@ function ListarAssociados() {
       <NavBar />
       <Container className="mt-4">
         <h3 className="text-center mb-4">Associados Cadastrados</h3>
-        {isLoading ? (
-          <p className="text-center">Carregando...</p>
-        ) : associados.length === 0 ? (
-          <p className="text-center">Nenhum associado cadastrado.</p>
-        ) : (
           <Table striped bordered hover responsive>
             <thead>
               <tr>
@@ -108,7 +90,14 @@ function ListarAssociados() {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => excluirAssociado(associado.cpf)}
+                      onClick={() => navigate(`/associados/${associado.cpf}`)}
+                    >
+                      Excluir
+                    </Button>
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      onClick={() => handleDelete(associado.cpf)}
                     >
                       Excluir
                     </Button>
@@ -117,7 +106,6 @@ function ListarAssociados() {
               ))}
             </tbody>
           </Table>
-        )}
       </Container>
     </>
   );
