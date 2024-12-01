@@ -102,7 +102,7 @@ function ListarAssociados() {
                   <td>{associado.email}</td>
                   <td>{associado.telefone}</td>
                   <td>{associado.status}</td>
-                  <td>{formatarData(associado.dataNascimento)}</td>
+                  <td>{formatarData(associado.dataNascimento) || "N/A"}</td>
                   <td>{formatarData(associado.dataCadastro) || "N/A"}</td>
                   <td>
                     <Button

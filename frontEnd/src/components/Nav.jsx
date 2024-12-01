@@ -59,7 +59,7 @@ function NavBar() {
         <Offcanvas.Body>
           <Nav className="flex-column">
             <Nav.Link as={Link} to="/" className="text-light">Início</Nav.Link>
-            <Nav.Link as={Link} to="/CadAssociados" className="text-light">Cadastrar Associado</Nav.Link>
+            <Nav.Link as={Link} to="/FormAssociados" className="text-light">Cadastrar Associado</Nav.Link>
             <Nav.Link as={Link} to="/ListarAssociados" className="text-light">Consultar Associados</Nav.Link>
             <Nav.Link as={Link} to="/" disabled className="text-light disabled">Ajuda</Nav.Link>
           </Nav>
