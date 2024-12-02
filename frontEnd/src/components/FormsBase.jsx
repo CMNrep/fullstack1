@@ -1,7 +1,7 @@
 import NavBar from "./Nav";
 import { Container, Row, Col } from "react-bootstrap";
 
-function FormsBase( children , title) {
+function FormsBase( {children , title}) {
   return (
     <>
       <NavBar />

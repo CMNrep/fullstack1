@@ -25,7 +25,7 @@ export default function CardsAtalho() {
           </div>
 
           <div className="card">
-            <Link to="/FormAssociados">
+            <Link to="/associados">
               <h3>Cadastrar Associado</h3>
             </Link>
           </div>
