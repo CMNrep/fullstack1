@@ -1,5 +1,3 @@
-CREATE DATABASE rrc;
-use rrc;
 CREATE TABLE associados (    
 	 cpf CHAR(11),      
 	 nome VARCHAR(100) NOT NULL,     
