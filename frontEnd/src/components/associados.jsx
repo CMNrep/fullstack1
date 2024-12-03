@@ -76,7 +76,7 @@ function FormAssociados() {
         return;
       }
       if (file.size > 4 * 1024 * 1024) {
-        // Limite de 2MB
+        // Limite de 4MB
         alert("O tamanho da imagem deve ser menor que 4MB.");
         return;
       }
@@ -164,7 +164,7 @@ function FormAssociados() {
                   }}
                 >
                   <Image
-                    src={values.foto || "https://via.placeholder.com/720x405"}
+                    src={values.foto || "https://via.placeholder.com/30x40  "}
                     alt="Foto"
                     className="img-fluid mx-auto my-auto"
                     style={{ height: "100%", objectFit: "cover" }}

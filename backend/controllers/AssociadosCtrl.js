@@ -3,6 +3,10 @@ const AssociadoDAO = require("../DAOs/AssociadoDAO.js");
 const e = require("cors");
 
 class AssociadosCtrl {
+
+   removeCpfMask(cpf) {
+    return cpf.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+}
   async inserir(req, res) {
     try {
       const {
@@ -17,17 +21,18 @@ class AssociadosCtrl {
         dataCadastro,
       } = req.body;
       const associadoData = {
-        cpf,
+        cpf:cpf.replace(/\D/g, ''),
         nome,
         endereco,
         email,
         telefone,
         status,
         dataNascimento,
-        urlFoto,
-        dataCadastro,
+        urlFoto:""
       };
 
+      
+         console.log('associadoData',dataCadastro)
       const associado = await Associado.criar(associadoData);
       res.status(201).json({
         message: "Associado inserido com sucesso",
@@ -43,13 +48,16 @@ class AssociadosCtrl {
   }
 
   async buscarPorFiltro(req, res) {
+
+    console.log('sdsds')
     try {
         const termo = req.query.termo || ""; // Busca termo na query string
         const associados = await Associado.buscarPorFiltro(termo);
-  
+       
         if (associados.length === 0) {
-          return res.status(404).json({ message: "Nenhum associado encontrado." });
+          return res.status(200).json({ message: "Nenhum associado encontrado." });
         }
+       
   
         res.status(200).json({
           message: "Associados encontrados",

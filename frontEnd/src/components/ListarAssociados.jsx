@@ -30,7 +30,7 @@ function ListarAssociados() {
         .then((json) => setAssociados(json.data || []))
         .catch((err) => {
           console.error(err);
-          alert("Erro ao buscar associados. Tente novamente.");
+          
         })
         .finally(() => setIsLoading(false));
     };

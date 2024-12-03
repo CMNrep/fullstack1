@@ -119,8 +119,7 @@ class Associado {
       associadoData.telefone,
       associadoData.status,
       associadoData.dataNascimento,
-      associadoData.urlFoto,
-      associadoData.dataCadastro
+      associadoData.urlFoto
     );
 
     await dao.inserir(associado);

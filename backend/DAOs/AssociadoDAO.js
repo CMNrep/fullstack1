@@ -17,9 +17,11 @@ class AssociadoDAO {
      * @returns {Promise<Object>} - A resposta da consulta, que cont m o ID do associado inserido.
      */
     async inserir(associado) {
+
+        console.log('associado',associado)
         const { cpf, nome, endereco, email, telefone, status, dataNascimento, urlFoto, dataCadastro } = associado;  
-        const query = "INSERT INTO associados (cpf, nome, endereco, email, telefone, status, data_nascimento, foto, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        const [result] = await db.execute(query,[cpf, nome, endereco, email, telefone, status, dataNascimento, urlFoto, dataCadastro]);
+        const query = "INSERT INTO associados (cpf, nome, endereco, email, telefone, status, data_nascimento, foto) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        const [result] = await db.execute(query,[cpf, nome, endereco, email, telefone, status, dataNascimento, urlFoto]);
         return result;
     }
 
