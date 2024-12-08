@@ -126,6 +126,12 @@ class Associado {
     return associado;
   }
 
+  static async filtrarStatus(status) {
+    const dao = new AssociadoDAO();
+    const rows = await dao.filtroStatus(status);
+    return rows.map(row => new Associado(row.cpf, row.nome, row.endereco, row.email, row.telefone, row.status, row.data_nascimento, row.foto, row.data_cadastro));
+  }
+
   /**
    * Busca associados que contenham o termo de pesquisa na base de dados.
    * @param {string} termo - O termo de pesquisa.

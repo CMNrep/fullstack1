@@ -26,7 +26,7 @@ class AssociadoDAO {
     }
 
     async buscarPorTermo(termo) {
-try {
+    try {
       let query, params;
 
       if (!termo) {
@@ -42,6 +42,19 @@ try {
     } catch (err) {
       throw new Error("Erro ao buscar associados por termo: " + err.message);
     }
+    }
+
+    async filtroStatus(status) {
+      if (!status) {
+        status = "%";
+      }
+         try {
+            const query = "SELECT * FROM associados WHERE status like ? ";
+            const [rows] = await db.execute(query, [status]);
+            return rows;
+          } catch (err) {
+            throw new Error("Erro ao buscar associados por status: " + err.message);
+          }
     }
 
     async buscarPorCpf(cpf) {

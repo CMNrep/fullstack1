@@ -1,50 +1,71 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./Nav";
-import { Container, Table, Button, Row } from "react-bootstrap";
+import { Form, Image, Container, Table, Button, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
+import addAssociado from "../assets/Icons/addAssociadoIcon.svg";
+
 
 function ListarAssociados() {
   const [associados, setAssociados] = useState([]);
   const [cpfBusca, setCpfBusca] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { cpf } = useParams();
-  
-  const navigate = useNavigate();
-  
 
-    /**
+  const navigate = useNavigate();
+
+  /**
    * Função para buscar associados.
    * Se `cpf` for fornecido, busca apenas um associado; caso contrário, busca todos.
    */
-    const fetchAssociado = (cpf = "") => {
-      setIsLoading(true);
-      const url = cpf
-        ? `http://localhost:3000/associados/${cpf}`
-        : "http://localhost:3000/associados";
-  
-      fetch(url, { method: "GET" })
-        .then((res) => {
-          if (!res.ok) throw new Error("Erro ao buscar associados");
-          return res.json();
-        })
-        .then((json) => setAssociados(json.data || []))
-        .catch((err) => {
-          console.error(err);
-          
-        })
-        .finally(() => setIsLoading(false));
-    };
+  const fetchAssociado = (cpf = "") => {
+    setIsLoading(true);
+    const url = cpf
+      ? `http://localhost:3000/associados/${cpf}`
+      : "http://localhost:3000/associados";
+
+    fetch(url, { method: "GET" })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro ao buscar associados");
+        return res.json();
+      })
+      .then((json) => setAssociados(json.data || []))
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   const handleDelete = (cpf) => {
     if (window.confirm("Tem certeza que deseja excluir o associado?")) {
       fetch(`http://localhost:3000/associados/${cpf}`, {
         method: "DELETE",
-      }).then(() => {
-        setAssociados(associados.filter((associado) => associado.cpf !== cpf));
-      }).catch((err) => console.log(err));
+      })
+        .then(() => {
+          setAssociados(
+            associados.filter((associado) => associado.cpf !== cpf)
+          );
+        })
+        .catch((err) => console.log(err));
     }
-  }
+  };
 
+  const fetchAssociadoStatus = (status = "%") => {
+    setIsLoading(true);
+    setAssociados([]);
+    const url = `http://localhost:3000/associados/${status}`;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Erro ao buscar associados.");
+        return res.json();
+      })
+      .then((json) => setAssociados(json.data || []))
+      .catch((err) => {
+        console.error(err);
+        alert(err.message || "Erro ao buscar associados.");
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   /**
    * Função para formatar datas no padrão brasileiro (dd/mm/yyyy)
@@ -53,7 +74,7 @@ function ListarAssociados() {
    */
   const formatarData = (data) => {
     if (!data) return "";
-    const dataFormatada = data.slice(0, 10).split("T")[0]
+    const dataFormatada = data.slice(0, 10).split("T")[0];
     const [ano, mes, dia] = dataFormatada.split("-");
     return `${dia}/${mes}/${ano}`;
   };
@@ -70,17 +91,53 @@ function ListarAssociados() {
       <NavBar />
       <Container className="mt-4">
         <h3 className="text-center mb-4">Associados Cadastrados</h3>
-          <Row className="justify-content-center mb-2">
+        <Row className="justify-content-center mb-2">
+          <Col className="col-5">
             <input
-              className="form-control w-25"
+              className="form-control"
               type="text"
-              placeholder="Buscar por CPF"
+              placeholder="Buscar por CPF nao funciona ainda"
               value={cpfBusca}
               onChange={(e) => setCpfBusca(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && fetchAssociado(cpfBusca)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && cpfBusca.trim() !== "") {
+                  fetchAssociado(cpfBusca.trim());
+                }
+              }}
             />
-          </Row>
-          <Row className="justify-content-center">
+          </Col>
+          <Col className="col-3">
+            <Button
+              variant="primary"
+              className="ms-2"
+              onClick={() => {
+                if (cpfBusca.trim() !== "") {
+                  fetchAssociado(cpfBusca.trim());
+                }
+              }}
+            >
+              Buscar
+            </Button>
+          </Col>
+          <Col className="col-2">
+            <Row className="justify-content-center align-items-center">
+              <Col className="col-3">
+                <Form.Label>Status:</Form.Label>
+              </Col>
+              <Col className="col-9">
+                <Form.Select onChange={(e) => fetchAssociadoStatus(e.target.value)}>
+                  <option value="">Todos</option>
+                  <option value="Ativo">Ativos</option>
+                  <option value="Inativo">Inativos</option>
+                </Form.Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col className="col-1 ms-auto">
+              <Image src={addAssociado} alt="Adicionar Associado" roundedCircle style={{ maxHeight: "42px", padding: "2px", cursor: "pointer"}}/>
+          </Col>
+        </Row>
+        <Row className="justify-content-center">
           {isLoading ? (
             <p>Carregando...</p>
           ) : (
@@ -104,7 +161,9 @@ function ListarAssociados() {
                     <tr key={associado.cpf}>
                       <td>
                         <img
-                          src={associado.foto || "https://via.placeholder.com/50"}
+                          src={
+                            associado.foto || "https://via.placeholder.com/50"
+                          }
                           alt="Foto do associado"
                           style={{
                             width: "50px",
@@ -126,7 +185,13 @@ function ListarAssociados() {
                           variant="warning"
                           size="sm"
                           className="me-1"
-                          onClick={() => navigate(`/associados/${associado.cpf}`) && console.log("CPF enviado para edição:", associado.cpf)} 
+                          onClick={() =>
+                            navigate(`/associados/${associado.cpf}`) &&
+                            console.log(
+                              "CPF enviado para edição:",
+                              associado.cpf
+                            )
+                          }
                         >
                           Editar
                         </Button>

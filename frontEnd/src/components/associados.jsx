@@ -36,6 +36,7 @@ function FormAssociados() {
             ...data,
             dataNascimento: data.dataNascimento ? formatarDataParaInput(data.dataNascimento) : "",
             dataCadastro: data.dataCadastro ? formatarDataParaInput(data.dataCadastro) : "",
+            cpf: data.cpf ? formatarCpfParaInput(data.cpf) : "",
           });
           
             console.log("CPF recebido na URL:", cpf);
@@ -91,6 +92,12 @@ function FormAssociados() {
   const formatarDataParaInput = (data) => {
     if (!data) return "";
     return data.split("T")[0];
+  };
+
+  const formatarCpfParaInput = (cpf) => {
+    if (cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, "$1.$2.$3-$4");
+    }
   };
 
   const validationSchema = Yup.object({

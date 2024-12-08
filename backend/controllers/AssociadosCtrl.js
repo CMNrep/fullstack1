@@ -47,6 +47,28 @@ class AssociadosCtrl {
     }
   }
 
+  async FiltrarStatus(req, res) {
+    try {
+        const { status } = req.params;
+        const associados = await Associado.filtrarStatus(status);
+  
+        if (associados.length === 0) {
+          return res.status(200).json({ message: "Nenhum associado encontrado." });
+        }
+  
+        res.status(200).json({
+          message: "Associados encontrados",
+          data: associados.map(associado => associado.toJSON()),
+        });
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({
+          message: "Erro ao buscar associados",
+          error: err.message,
+        });
+      }
+  }
+
   async buscarPorFiltro(req, res) {
 
     console.log('sdsds')
