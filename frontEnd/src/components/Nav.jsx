@@ -49,8 +49,16 @@ function NavBar() {
           <Nav className="flex-column">
             <Nav.Link as={Link} to="/" className="text-light">Início</Nav.Link>
             <Nav.Link as={Link} to="/associados" className="text-light">Cadastrar Associado</Nav.Link>
+            <Nav.Link as={Link} className="text-light" >Cadastrar títulos</Nav.Link>
+            <Nav.Link as={Link} to="/netflix-ta-cara-meus-anjos" className="text-light">
+              Cadastrar Despesas
+            </Nav.Link>
+            <Nav.Link as={Link} className="text-light">Cadastrar cargos</Nav.Link>
+            <Nav.Link as={Link} className="text-light">_______________________</Nav.Link>
             <Nav.Link as={Link} to="/ListarAssociados" className="text-light">Consultar Associados</Nav.Link>
+            <Nav.Link as={Link} className="text-light">_______________________</Nav.Link>
             <Nav.Link as={Link} to="/" disabled className="text-light disabled">Ajuda</Nav.Link>
+                       
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>

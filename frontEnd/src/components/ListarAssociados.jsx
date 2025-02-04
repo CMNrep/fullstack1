@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import NavBar from "./Nav";
+import FormsBase from "./FormsBase";
 import { Form, Image, Container, Table, Button, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import addAssociado from "../assets/Icons/addAssociadoIcon.svg";
@@ -88,9 +88,8 @@ function ListarAssociados() {
 
   return (
     <>
-      <NavBar />
+      <FormsBase title="Listagem de Associados"> 
       <Container className="mt-4">
-        <h3 className="text-center mb-4">Associados Cadastrados</h3>
         <Row className="justify-content-center mb-2">
           <Col className="col-5">
             <input
@@ -119,12 +118,12 @@ function ListarAssociados() {
               Buscar
             </Button>
           </Col>
-          <Col className="col-2">
+          <Col className="col-3">
             <Row className="justify-content-center align-items-center">
-              <Col className="col-3">
+              <Col className="col-4">
                 <Form.Label>Status:</Form.Label>
               </Col>
-              <Col className="col-9">
+              <Col className="col-8">
                 <Form.Select onChange={(e) => fetchAssociadoStatus(e.target.value)}>
                   <option value="">Todos</option>
                   <option value="Ativo">Ativos</option>
@@ -182,7 +181,7 @@ function ListarAssociados() {
                       <td>{formatarData(associado.dataCadastro)}</td>
                       <td>
                         <Button
-                          variant="warning"
+                          style={{ backgroundColor: "#198754", color: "white" }}
                           size="sm"
                           className="me-1"
                           onClick={() =>
@@ -196,7 +195,7 @@ function ListarAssociados() {
                           Editar
                         </Button>
                         <Button
-                          variant="outline-danger"
+                          style={{ backgroundColor: "#dc3545", color: "white" }}
                           size="sm"
                           onClick={() => handleDelete(associado.cpf)}
                         >
@@ -217,6 +216,7 @@ function ListarAssociados() {
           )}
         </Row>
       </Container>
+      </FormsBase>
     </>
   );
 }

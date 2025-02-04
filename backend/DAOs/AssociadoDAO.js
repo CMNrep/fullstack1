@@ -73,6 +73,21 @@ class AssociadoDAO {
         return result;
     }   
 
+    /**
+     * Atualiza um associado no banco de dados.
+     * @param {Object} associado - Um objeto com as seguintes propriedades:
+     *     - cpf: string - O CPF do associado.
+     *     - nome: string - O nome do associado.
+     *     - endereco: string - O endere o do associado.
+     *     - email: string - O e-mail do associado.
+     *     - telefone: string - O telefone do associado.
+     *     - status: string - O status do associado.
+     *     - dataNascimento: string - A data de nascimento do associado.
+     *     - urlFoto: string - A URL da foto do associado.
+     *     - dataCadastro: string - A data de cadastro do associado.
+     * @returns {Promise<Boolean>} - Uma promessa que resolve com um booleano indicando se o associado foi atualizado com sucesso.
+     * @throws {Error} - Um erro caso ocorra um problema ao atualizar o associado.
+     */
     async atualizar(associado) {
       const { cpf, nome, endereco, email, telefone, status, dataNascimento, urlFoto, dataCadastro } = associado;
       const query = `
